@@ -81,13 +81,15 @@ class AddTask extends StatelessWidget {
                     final isValid = taskController.key.currentState!.validate();
 
                     if (isValid) {
-                      logger.d(isValid);
                       taskController.addTask(
                           name: taskController.nameController.text.trim(),
                           description:
                               taskController.descriptionController.text.trim(),
                           dateTime: DateTime.parse(
                               taskController.selectedDate.value));
+                      taskController.nameController.clear();
+                      taskController.descriptionController.clear();
+                      taskController.dateController.clear();
                     }
                     logger.d(taskController.taskList);
                   },

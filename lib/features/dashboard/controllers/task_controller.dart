@@ -10,7 +10,8 @@ class TaskController extends GetxController {
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
   final dateController = TextEditingController();
-var selectedDate = ''.obs;
+  var selectedDate = ''.obs;
+  var selectedTaskIndex = 0.obs;
 
   @override
   void onClose() {
@@ -31,5 +32,8 @@ var selectedDate = ''.obs;
         name: name,
         description: description,
         date: dateTime));
+    Get.back();
+    Get.snackbar('Success', "Your task added successfully");
   }
+
 }

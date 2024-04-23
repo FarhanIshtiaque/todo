@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:todo/config/routes/app_pages.dart';
 import 'package:todo/config/routes/app_routes.dart';
+import 'package:todo/core/constants/app_colors.dart';
 import 'package:todo/core/resource/injection_container.dart';
 
 void main() async{
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
       child: GetMaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary),
           useMaterial3: true,
         ),
         getPages: AppPages.pages,
