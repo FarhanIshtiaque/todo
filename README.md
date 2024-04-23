@@ -1,6 +1,6 @@
 # todo
 
-A new Flutter project.
+A simple todo app with Flutter.
 
 ## Getting Started
 
@@ -8,10 +8,16 @@ This project is a starting point for a Flutter application.
 
 A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+No code generation is used
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Just use - flutter run 
+
+Local Storage used SQFLite
+State Management used GetX
+
+Features
+ - List of Pending and Done task
+ - Changing status of task by clicking checkbox
+ - Add task by click on the floating button
+ - On tap in task will go to task details where you can update and delete task
 # todo
