@@ -1,79 +1,66 @@
 import 'package:sqflite/sqflite.dart';
-import 'package:todo/core/helper/logger.dart';
 import 'package:todo/features/dashboard/data/task_model.dart';
-
+import 'package:path/path.dart';
 
 class LocalStorage{
+  static Database? _database;
 
-  String tableName = "cart";
+  Future<Database> get database async {
+    if (_database != null) return _database!;
+    _database = await init();
+    return _database!;
+  }
+   init() async{
 
-  Database? database;
-
-  Future<void> init() async{
-
-    String databasePath = await getDatabasesPath();
-
-    await openDatabase(
-        "$databasePath/task_db",
-        version: 1,
-        onCreate: (db,version) async{
-          String sqlQuery = "CREATE TABLE $tableName (id INTEGER PRIMARY KEY, name TEXT, price INTEGER, image_url TEXT, count INTEGER)";
-          await db.execute(sqlQuery);
-          database = db;
-        },
-        onOpen: (db){
-          database = db;
-        },
-
-        onUpgrade: (db,oldVersion,newVersion){
-          database = db;
-        }
+    String path = join(await getDatabasesPath(), "tasks.db");
+    return await openDatabase(
+      path,
+      version: 1,
+      onCreate: (db, version) async {
+        await db.execute(
+          "CREATE TABLE tasks (id TEXT PRIMARY KEY, name TEXT, description TEXT, date TEXT, status INTEGER)",
+        );
+      },
     );
 
+
   }
 
-  Future<bool> addCart(Task task) async{
-    int? isInserted =  await database?.insert(tableName, task.toJson());
-    logger.d(isInserted);
-    if (isInserted != null) {
-      // Insertion was successful, and isInserted contains the ID of the inserted row
-      return true;
-    } else {
-      // Insertion failed
-      return false;
-    }
+  Future<void> insertTask(Task task) async {
+    final db = await database;
+    await db.insert('tasks', task.toMap());
   }
 
-  Future<List<Task>> fetchAllCarts() async {
-    List<Map<String, Object?>>? mapList = await database?.query(tableName);
-    List<Task> taskList = [];
 
-    if (mapList != null) {
-      for (Map<String, Object?> item in mapList) {
-        taskList.add(Task.fromJson(item));
-      }
-    } else {
-
-      // Handle the case where mapList is null
-      // For example, you could log an error message or throw an exception
-    //  print('Error: mapList is null');
-      return taskList;
-       throw Exception('mapList is null'); // Uncomment this line to throw an exception
-    }
-
-    return taskList;
+  Future<List<Task>> getTasks() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('tasks');
+    return List.generate(maps.length, (i) {
+      return Task.fromMap(maps[i]);
+    });
   }
 
 
 
 
-  Future<void> delete(int id) async {
-    await database?.delete(tableName, where: 'id = ?', whereArgs: [id]);
+
+  Future<void> updateTask(Task task) async {
+    final db = await database;
+    await db.update(
+      'tasks',
+      task.toMap(),
+      where: 'id = ?',
+      whereArgs: [task.id],
+    );
   }
 
-  Future<void> update(Task task) async {
-    await database?.update(tableName, task.toJson(),
-        where: 'id = ?', whereArgs: [task.id]);
+  Future<void> deleteTask(String id) async {
+    final db = await database;
+    await db.delete(
+      'tasks',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
   }
 
 
