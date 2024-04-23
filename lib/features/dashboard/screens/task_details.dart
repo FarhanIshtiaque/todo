@@ -114,7 +114,7 @@ class _TaskDetailsState extends State<TaskDetails> {
                     child: PrimaryButton(
                       color: AppColors.error500,
                         onPressed: () {
-                         taskController.deleteTask();
+                         taskController.deleteTask(id);
                         },
                         buttonNameWidget: const Text(
                           'Delete',

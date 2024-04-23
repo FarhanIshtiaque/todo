@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:todo/config/routes/app_pages.dart';
@@ -6,11 +7,11 @@ import 'package:todo/core/constants/app_colors.dart';
 import 'package:todo/core/constants/app_values.dart';
 import 'package:todo/core/constants/text_styles.dart';
 import 'package:todo/features/dashboard/controllers/task_controller.dart';
+import 'package:todo/features/dashboard/data/task_model.dart';
+import 'package:todo/features/dashboard/screens/widgets/task_card.dart';
 
 class PendingTask extends StatelessWidget {
-  PendingTask({super.key});
-
-  bool isChecked = false;
+  const PendingTask({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,27 +31,44 @@ class PendingTask extends StatelessWidget {
                 height: 16,
               ),
               Obx(
-                () => ListView.separated(
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return TaskCard(
-                        isChecked: isChecked,
-                        name: taskController.taskList[index].name,
-                        date: taskController.taskList[index].date,
-                        onTap: (){
-                          Get.toNamed(Routes.TASKDETAILS,
-                            arguments: taskController.taskList[index]
-                          );
-                          taskController.selectedTaskIndex(index);
-                        },
-                      );
-                    },
-                    separatorBuilder: (context, index) {
-                      return const SizedBox(
-                        height: 16,
-                      );
-                    },
-                    itemCount: taskController.taskList.length),
+                () => AnimationLimiter(
+                  child: ListView.separated(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        Task task = taskController.pendingTasks[index];
+                        return AnimationConfiguration.staggeredList(
+                          position: index,
+                          duration: const Duration(milliseconds: 500),
+                          child: SlideAnimation(
+                            verticalOffset: 50.0,
+                            child: FadeInAnimation(
+                              child: TaskCard(
+                                isChecked: task.status,
+                                name: task.name,
+                                date: task.date,
+                                onTap: () {
+                                  Get.toNamed(Routes.TASKDETAILS,
+                                      arguments:
+                                          taskController.pendingTasks[index]);
+                                  taskController.selectedTaskIndex(index);
+                                },
+                                onChanged: (bool? value) {
+                                  task.toggleStatus();
+                                  taskController.updateTask(task);
+                                },
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      separatorBuilder: (context, index) {
+                        return const SizedBox(
+                          height: 16,
+                        );
+                      },
+                      itemCount: taskController.pendingTasks.length),
+                ),
               )
             ],
           ),
@@ -60,78 +78,3 @@ class PendingTask extends StatelessWidget {
   }
 }
 
-class TaskCard extends StatelessWidget {
-  const TaskCard({
-    super.key,
-    required this.isChecked,
-    required this.name,
-    required this.date, this.onTap,
-  });
-
-  final bool isChecked;
-  final String name;
-  final DateTime date;
-  final GestureTapCallback? onTap;
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: AppTextStyle.body2Medium,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  SizedBox(
-                    height: 2,
-                  ),
-                  Text(
-                    DateFormat.yMMMMd().format(date).toString(),
-                    style:
-                        AppTextStyle.caption2.copyWith(color: AppColors.natural4),
-                  )
-                ],
-              ),
-              Checkbox(
-                side: const BorderSide(color: AppColors.natural5, width: 2),
-                checkColor: Colors.white,
-                fillColor: MaterialStateProperty.resolveWith(getColor),
-                value: isChecked,
-                onChanged: (bool? value) {
-                  // setState(() {
-                  //   isChecked = value!;
-                  // });
-                },
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-Color getColor(Set<MaterialState> states) {
-  const Set<MaterialState> interactiveStates = <MaterialState>{
-    MaterialState.pressed,
-    MaterialState.hovered,
-    MaterialState.focused,
-  };
-  if (states.any(interactiveStates.contains)) {
-    return Colors.blue;
-  }
-  return Colors.white;
-}

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:todo/core/helper/logger.dart';
 import 'package:todo/core/resource/local_storage/local_storage.dart';
 import 'package:todo/features/dashboard/data/task_model.dart';
 import 'package:uuid/uuid.dart';
@@ -44,7 +43,8 @@ class TaskController extends GetxController {
         status: false,
         name: name,
         description: description,
-        date: dateTime);
+        date: dateTime,
+    );
     taskList.add(data);
     localStorage.insertTask(data);
 
@@ -60,21 +60,30 @@ class TaskController extends GetxController {
 
 
   void updateTask (Task task){
-   taskList[selectedTaskIndex.value] = task;
+    int index = taskList.indexWhere((element) => element.id == task.id);
+    if (index != -1) {
+      taskList[index] = task;
+    }
    localStorage.updateTask(task);
     Get.back();
     Get.snackbar('Success', 'Task updated');
 
   }
 
-  void deleteTask(){
+  void deleteTask(String id){
     localStorage.deleteTask(taskList[selectedTaskIndex.value].id);
-   taskList.removeAt(selectedTaskIndex.value);
+    taskList.removeWhere((task) => task.id == id);
 
     Get.back();
     Get.snackbar('Success', 'Task deleted');
   }
 
-
+  // Computed property to get only tasks with status false
+  List<Task> get pendingTasks {
+    return taskList.where((task) => !task.status).toList();
+  }
+  List<Task> get doneTasks {
+    return taskList.where((task) => task.status).toList();
+  }
 
 }

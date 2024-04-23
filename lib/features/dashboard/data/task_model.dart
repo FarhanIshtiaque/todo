@@ -30,4 +30,7 @@ class Task {
     date = DateTime.parse(map['date']); // Parse ISO 8601 string to DateTime
     status = map['status'] == 1; // Convert integer to boolean
   }
+  void toggleStatus() {
+    status = !status;
+  }
 }
