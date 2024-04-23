@@ -55,7 +55,26 @@ class TaskController extends GetxController {
   void fetchAllTasks() async{
     final allTask = await localStorage.getTasks();
     taskList.assignAll(allTask);
-    logger.d(taskList);
+
   }
+
+
+  void updateTask (Task task){
+   taskList[selectedTaskIndex.value] = task;
+   localStorage.updateTask(task);
+    Get.back();
+    Get.snackbar('Success', 'Task updated');
+
+  }
+
+  void deleteTask(){
+    localStorage.deleteTask(taskList[selectedTaskIndex.value].id);
+   taskList.removeAt(selectedTaskIndex.value);
+
+    Get.back();
+    Get.snackbar('Success', 'Task deleted');
+  }
+
+
 
 }
