@@ -114,9 +114,7 @@ class _TaskDetailsState extends State<TaskDetails> {
                     child: PrimaryButton(
                       color: AppColors.error500,
                         onPressed: () {
-                          taskController.taskList.removeAt(taskController.selectedTaskIndex.value);
-                          Get.back();
-                          Get.snackbar('Success', 'Task deleted');
+                         taskController.deleteTask(id);
                         },
                         buttonNameWidget: const Text(
                           'Delete',
@@ -130,14 +128,13 @@ class _TaskDetailsState extends State<TaskDetails> {
                           final isValid = taskController.key.currentState!.validate();
 
                           if (isValid) {
-                       taskController.taskList[taskController.selectedTaskIndex.value]= Task(id: id,
-                           name: nameController.text,
-                           description: descriptionController.text,
-                           status: status,
-                           date: dateTime!);
+                            Task data = Task(id: id,
+                                name: nameController.text,
+                                description: descriptionController.text,
+                                status: status,
+                                date: dateTime!);
 
-                       Get.back();
-                       Get.snackbar('Success', 'Task updated');
+                            taskController.updateTask(data);
                           }
                         },
                         buttonNameWidget: const Text(
