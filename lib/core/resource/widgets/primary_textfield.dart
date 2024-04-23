@@ -1,13 +1,11 @@
-
 import 'package:flutter/material.dart';
 import 'package:todo/core/constants/app_colors.dart';
 import 'package:todo/core/constants/text_styles.dart';
 
 
-
 class PrimaryTextField extends StatelessWidget {
   const PrimaryTextField({
-    super.key,
+    Key? key,
     this.controller,
     this.fillColor = AppColors.natural7,
     this.validator,
@@ -17,8 +15,8 @@ class PrimaryTextField extends StatelessWidget {
     this.suffixIcon,
     this.hintText,
     this.prefixIcon,
-    this.maxLines = 1,
-  });
+    this.maxLines = 1, this.readOnly = false, this.onTap,
+  }) : super(key: key);
   final TextEditingController? controller;
   final Color? fillColor;
   final FormFieldValidator<String>? validator;
@@ -29,29 +27,35 @@ class PrimaryTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final Widget? prefixIcon;
   final int maxLines;
+  final bool readOnly ;
+  final GestureTapCallback? onTap;
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onTap: onTap,
+      readOnly: readOnly,
       onChanged: onChanged,
       maxLines: maxLines,
       obscureText: obscureText,
       validator: validator,
       controller: controller,
       cursorColor: AppColors.gray500,
-   //   style: bodyMedium14.copyWith(color: AppColors.gray500),
+      //   style: bodyMedium14.copyWith(color: AppColors.gray500),
       keyboardType: keyboardType,
       decoration: InputDecoration(
+
         suffixIcon: suffixIcon,
         prefixIcon: prefixIcon,
         prefixIconColor:
-            MaterialStateColor.resolveWith((states) => states.contains(MaterialState.focused) ? AppColors.gray500 : AppColors.gray200),
+        MaterialStateColor.resolveWith((states) => states.contains(MaterialState.focused) ? AppColors.gray500 : AppColors.gray200),
         suffixIconColor:
-            MaterialStateColor.resolveWith((states) => states.contains(MaterialState.focused) ? AppColors.gray500 : AppColors.gray200),
+        MaterialStateColor.resolveWith((states) => states.contains(MaterialState.focused) ? AppColors.gray500 : AppColors.gray200),
         fillColor: fillColor,
         filled: true,
         hintText: hintText,
-      hintStyle: AppTextStyle.caption,
-      //  hintStyle: bodyMedium14.copyWith(color: AppColors.gray200),
+        hintStyle: AppTextStyle.caption,
+        //  hintStyle: bodyMedium14.copyWith(color: AppColors.gray200),
         contentPadding: const EdgeInsets.only(left: 16, top: 11, bottom: 11),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
@@ -64,7 +68,7 @@ class PrimaryTextField extends StatelessWidget {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: const   BorderSide(   width: 0,
-          style: BorderStyle.none,),
+            style: BorderStyle.none,),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),

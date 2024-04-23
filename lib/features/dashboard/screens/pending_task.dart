@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:todo/core/constants/app_colors.dart';
 import 'package:todo/core/constants/app_values.dart';
 import 'package:todo/core/constants/text_styles.dart';
+import 'package:todo/features/dashboard/controllers/task_controller.dart';
 
 class PendingTask extends StatelessWidget {
   PendingTask({super.key});
@@ -10,6 +12,7 @@ class PendingTask extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final taskController = Get.put(TaskController());
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
@@ -17,11 +20,11 @@ class PendingTask extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Pending Task',
                 style: AppTextStyle.body1Bold,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
               ListView.separated(

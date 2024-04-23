@@ -12,9 +12,9 @@ class Validator {
     }
   }
 
-  static String? validatePassword(String value) {
+  static String? validateDate(String value) {
     if (value.isEmpty) {
-      return "Please enter password";
+      return "Please select date";
     } else {
       return null;
     }
@@ -35,9 +35,16 @@ class Validator {
     return null;
   }
 
-  static String? validateTrip(String value) {
+  static String? validateName(String value) {
     if (value.length < 3) {
-      return "Trip name can\'t be null or at least 4 character";
+      return "Task name can\'t be empty or at least 4 character";
+    } else {
+      return null;
+    }
+  }
+  static String? validateDescription(String value) {
+    if (value.length < 3) {
+      return "Task description can\'t be empty or at least 4 character";
     } else {
       return null;
     }

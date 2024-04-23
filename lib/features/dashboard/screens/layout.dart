@@ -1,7 +1,9 @@
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:todo/config/routes/app_pages.dart';
 import 'package:todo/core/constants/app_colors.dart';
 import 'package:todo/features/dashboard/screens/done_task.dart';
 import 'package:todo/features/dashboard/screens/pending_task.dart';
@@ -64,12 +66,11 @@ class _LayoutState extends State<Layout> {
         },
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: AppColors.primary,
         onPressed: () {
-          // setState(() {
-          //   index = (index + 1) % customizations.length;
-          // });
+          Get.toNamed(Routes.ADDTASK);
         },
-        shape:CircleBorder(),
+        shape:const CircleBorder(),
 
         child: const Icon(Icons.add),
       ),
