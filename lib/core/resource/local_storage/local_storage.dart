@@ -1,6 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:todo/core/helper/logger.dart';
-import 'package:todo/features/task/data/task_model.dart';
+import 'package:todo/features/dashboard/data/task_model.dart';
 
 
 class LocalStorage{
