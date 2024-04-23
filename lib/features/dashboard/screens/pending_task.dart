@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:todo/config/routes/app_pages.dart';
 import 'package:todo/core/constants/app_colors.dart';
 import 'package:todo/core/constants/app_values.dart';
 import 'package:todo/core/constants/text_styles.dart';
@@ -27,17 +29,29 @@ class PendingTask extends StatelessWidget {
               const SizedBox(
                 height: 16,
               ),
-              ListView.separated(
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return TaskCard(isChecked: isChecked);
-                  },
-                  separatorBuilder: (context, index) {
-                    return SizedBox(
-                      height: 16,
-                    );
-                  },
-                  itemCount: 5)
+              Obx(
+                () => ListView.separated(
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return TaskCard(
+                        isChecked: isChecked,
+                        name: taskController.taskList[index].name,
+                        date: taskController.taskList[index].date,
+                        onTap: (){
+                          Get.toNamed(Routes.TASKDETAILS,
+                            arguments: taskController.taskList[index]
+                          );
+                          taskController.selectedTaskIndex(index);
+                        },
+                      );
+                    },
+                    separatorBuilder: (context, index) {
+                      return const SizedBox(
+                        height: 16,
+                      );
+                    },
+                    itemCount: taskController.taskList.length),
+              )
             ],
           ),
         ),
@@ -50,53 +64,60 @@ class TaskCard extends StatelessWidget {
   const TaskCard({
     super.key,
     required this.isChecked,
+    required this.name,
+    required this.date, this.onTap,
   });
 
   final bool isChecked;
-
+  final String name;
+  final DateTime date;
+  final GestureTapCallback? onTap;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'This is the first task lol',
-                  style: AppTextStyle.body2Medium,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                SizedBox(
-                  height: 2,
-                ),
-                Text(
-                  'Mar 2, 2023',
-                  style:
-                      AppTextStyle.caption2.copyWith(color: AppColors.natural4),
-                )
-              ],
-            ),
-            Checkbox(
-              side: const BorderSide(color: AppColors.natural5, width: 2),
-              checkColor: Colors.white,
-              fillColor: MaterialStateProperty.resolveWith(getColor),
-              value: isChecked,
-              onChanged: (bool? value) {
-                // setState(() {
-                //   isChecked = value!;
-                // });
-              },
-            )
-          ],
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: AppTextStyle.body2Medium,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(
+                    height: 2,
+                  ),
+                  Text(
+                    DateFormat.yMMMMd().format(date).toString(),
+                    style:
+                        AppTextStyle.caption2.copyWith(color: AppColors.natural4),
+                  )
+                ],
+              ),
+              Checkbox(
+                side: const BorderSide(color: AppColors.natural5, width: 2),
+                checkColor: Colors.white,
+                fillColor: MaterialStateProperty.resolveWith(getColor),
+                value: isChecked,
+                onChanged: (bool? value) {
+                  // setState(() {
+                  //   isChecked = value!;
+                  // });
+                },
+              )
+            ],
+          ),
         ),
       ),
     );
